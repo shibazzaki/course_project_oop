@@ -54,10 +54,8 @@ public class ComposerApp {
         // Читання даних з вхідних файлів
         readComposersFromFiles(germanComposers, italianComposers, otherComposers);
 
-        // Сортування композиторів за замовчуванням (ім'я, рік народження, країна)
-        Collections.sort(germanComposers);
-        Collections.sort(italianComposers);
-        Collections.sort(otherComposers);
+        // Сортування композиторів
+        sortComposers(germanComposers, italianComposers, otherComposers);
 
         // Запис відсортованих даних у вихідні файли
         writeComposersToFiles(germanComposers, italianComposers, otherComposers);
@@ -99,25 +97,93 @@ public class ComposerApp {
         reader.close();
     }
 
-    private static void writeComposersToFiles(List<Composer> germanComposers, List<Composer> italianComposers, List<Composer> otherComposers) {
-        try {
-            writeComposersToFile("german_composers.txt", germanComposers);
-            writeComposersToFile("italian_composers.txt", italianComposers);
-            writeComposersToFile("other_composers.txt", otherComposers);
-        } catch (IOException e) {
-            e.printStackTrace();
+    private static void sortComposers(List<Composer> germanComposers, List<Composer> italianComposers, List<Composer> otherComposers) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Виберіть тип сортування (1 - ім'я, країна, рік; 2 - рік, ім'я, країна; 3 - ім'я, рік, країна): ");
+        int sortType = scanner.nextInt();
+
+        switch (sortType) {
+            case 1:
+                sortByNameCountryBirthYear(germanComposers, italianComposers, otherComposers);
+                break;
+            case 2:
+                sortByBirthYearNameCountry(germanComposers, italianComposers, otherComposers);
+                break;
+            case 3:
+                sortByNameBirthYearCountry(germanComposers, italianComposers, otherComposers);
+                break;
+            default:
+                sortByDefault(germanComposers, italianComposers, otherComposers);
+                break;
         }
     }
 
-    private static void writeComposersToFile(String fileName, List<Composer> composers) throws IOException {
-        File file = new File(fileName);
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+    private static void sortByNameCountryBirthYear(List<Composer> germanComposers, List<Composer> italianComposers, List<Composer> otherComposers) {
+        Collections.sort(germanComposers, Comparator.comparing(Composer::getName)
+                .thenComparing(Composer::getCountry)
+                .thenComparingInt(Composer::getBirthYear));
 
-        for (Composer composer : composers) {
-            writer.write(composer.toString());
-            writer.newLine();
-        }
+        Collections.sort(italianComposers, Comparator.comparing(Composer::getName)
+                .thenComparing(Composer::getCountry)
+                .thenComparingInt(Composer::getBirthYear));
 
-        writer.close();
+        Collections.sort(otherComposers, Comparator.comparing(Composer::getName)
+                .thenComparing(Composer::getCountry)
+                .thenComparingInt(Composer::getBirthYear));
     }
+
+    private static void sortByBirthYearNameCountry(List<Composer> germanComposers, List<Composer> italianComposers, List<Composer> otherComposers) {
+        Collections.sort(germanComposers, Comparator.comparingInt(Composer::getBirthYear)
+                .thenComparing(Composer::getName)
+                .thenComparing(Composer::getCountry));
+
+        Collections.sort(italianComposers, Comparator.comparingInt(Composer::getBirthYear)
+                .thenComparing(Composer::getName)
+                .thenComparing(Composer::getCountry));
+
+        Collections.sort(otherComposers, Comparator.comparingInt(Composer::getBirthYear)
+                .thenComparing(Composer::getName)
+                .thenComparing(Composer::getCountry));
+    }
+
+    private static void sortByNameBirthYearCountry(List<Composer> germanComposers, List<Composer> italianComposers, List<Composer> otherComposers) {
+        Collections.sort(germanComposers, Comparator.comparing(Composer::getName)
+                .thenComparingInt(Composer::getBirthYear)
+                .thenComparing(Composer::getCountry));
+
+        Collections.sort(italianComposers, Comparator.comparing(Composer::getName)
+                .thenComparingInt(Composer::getBirthYear)
+                .thenComparing(Composer::getCountry));
+
+        Collections.sort(otherComposers, Comparator.comparing(Composer::getName)
+                .thenComparingInt(Composer::getBirthYear)
+                .thenComparing(Composer::getCountry));
+    }
+
+    private static void sortByDefault(List<Composer> germanComposers, List<Composer> italianComposers, List<Composer> otherComposers) {
+        Collections.sort(germanComposers);
+        Collections.sort(italianComposers);
+        Collections.sort(otherComposers);
+    }
+
+   private static void writeComposersToFiles(List<Composer> germanComposers, List<Composer> italianComposers, List<Composer> otherComposers) {
+    try {
+        writeComposersToFile("german_composers.txt", germanComposers);
+        writeComposersToFile("italian_composers.txt", italianComposers);
+        writeComposersToFile("other_composers.txt", otherComposers);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
+private static void writeComposersToFile(String fileName, List<Composer> composers) throws IOException {
+    File file = new File(fileName);
+    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+
+    for (Composer composer : composers) {
+        writer.write(composer.toString());
+        writer.newLine();
+    }
+
+    writer.close();
 }

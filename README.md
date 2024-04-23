@@ -25,4 +25,4 @@
 
 >Для перетворення текстового рядка у масив Strings використати метод split() з класу String. Для перетворення текстових змінних у числові використати методи parseDouble() з класу Double та parseInt() з класу Integer.
 
-*IDE**: IntelliJ IDEA Ultimate
+**IDE**: IntelliJ IDEA Ultimate
